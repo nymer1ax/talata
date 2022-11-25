@@ -1,6 +1,7 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+	implementation project( ':api-rest')
 	implementation project( ':rest-consumer')
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation project(':model')
