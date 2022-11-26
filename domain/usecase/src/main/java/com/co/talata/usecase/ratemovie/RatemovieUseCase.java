@@ -1,6 +1,7 @@
 package com.co.talata.usecase.ratemovie;
 
 import com.co.talata.model.movie.Movie;
+import com.co.talata.model.movie.Rating;
 import com.co.talata.model.movie.gateways.MovieRepository;
 import com.co.talata.model.movie.gateways.RatingMovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class RatemovieUseCase {
 
     public Movie RateMovie(int movieId, String guessSessionId) throws IOException{
 
-        var rating = ratingMovieRepository.rate(movieId, guessSessionId);
+        Rating rating = ratingMovieRepository.rate(movieId, guessSessionId);
 
         if(rating.getStatus_code() == 7){
             throw new RuntimeException("Unauthorized, verifica tu guess Session Id.");
