@@ -14,6 +14,6 @@ import java.time.LocalDateTime;
 public class Response {
     private String codigoResultado;
     private String descripcionRespuesta;
-    private LocalDateTime fecha;
+    private String fecha;
     public Object result;
 }

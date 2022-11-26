@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ import org.springframework.data.domain.PageRequest;
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST, RequestMethod.PUT})
+@Validated
 public class ApiRest {
 private final GetAllMovieUseCase getAllMovieUseCase;
 
@@ -32,13 +33,13 @@ private final RatemovieUseCase ratemovieUseCase;
 private final DeleteratingmovieUseCase deleteratingmovieUseCase;
 
     @GetMapping(path = "/movies")
-    public ResponseEntity<Response> popularMovies(@RequestParam(value = "1") int page, @RequestParam(value = "1") int paginationNumPage, @RequestParam(value = "20") int paginationSizeElements  ) throws IOException {
+    public ResponseEntity<Response> popularMovies(@RequestParam(defaultValue = "2") int page, @RequestParam(defaultValue = "0") int pagePagination, @RequestParam(defaultValue = "20") int size) throws IOException {
 
         List<Movie> movies =  getAllMovieUseCase.getAllPopularMovies(page);
 
-        Page<Movie> pageList = new PageImpl<>(movies, PageRequest.of(paginationNumPage, paginationSizeElements), movies.size());
+        Page<Movie> pageList = new PageImpl<>(movies, PageRequest.of(pagePagination, size), movies.size());
 
-        var response = Response.builder().codigoResultado("200").descripcionRespuesta("OK").fecha(LocalDateTime.now())
+        Response response = Response.builder().codigoResultado("200").descripcionRespuesta("Este es el listado de las peliculas más populares ahora mismo: ").fecha(LocalDateTime.now().toString())
                 .result(pageList).build();
 
         return  ResponseEntity.status(HttpStatus.OK).body(response);
@@ -49,7 +50,7 @@ private final DeleteratingmovieUseCase deleteratingmovieUseCase;
 
        Movie movies = getMovieByIdUseCase.getMovieById(id);
 
-        Response response = Response.builder().codigoResultado("202").descripcionRespuesta("ACCEPTED").fecha(LocalDateTime.now())
+        Response response = Response.builder().codigoResultado("202").descripcionRespuesta("Se ha encontrado con exito la pelicula: "+id).fecha(LocalDateTime.now().toString())
                 .result(movies).build();
 
         return  ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
@@ -60,7 +61,7 @@ private final DeleteratingmovieUseCase deleteratingmovieUseCase;
 
         Movie rate = ratemovieUseCase.RateMovie(id, guestSessionId, value);
 
-        Response response = Response.builder().codigoResultado("201").descripcionRespuesta("CREATED").fecha(LocalDateTime.now())
+        Response response = Response.builder().codigoResultado("201").descripcionRespuesta("Se ha creado con éxito el rating para la pelicula "+id).fecha(LocalDateTime.now().toString())
                 .result(rate).build();
 
         return  ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -71,10 +72,11 @@ private final DeleteratingmovieUseCase deleteratingmovieUseCase;
 
         Movie rate = deleteratingmovieUseCase.eliminarRating(id, guestSessionId);
 
-        Response response = Response.builder().codigoResultado("201").descripcionRespuesta("CREATED").fecha(LocalDateTime.now())
+        Response response = Response.builder().codigoResultado("201").descripcionRespuesta("se ha eliminado con exito el rating para la pelicula: "+ id).fecha(LocalDateTime.now().toString())
                 .result(rate).build();
 
         return  ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
 
     }
+
 }

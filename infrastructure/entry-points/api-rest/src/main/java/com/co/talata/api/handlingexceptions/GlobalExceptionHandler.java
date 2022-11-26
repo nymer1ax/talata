@@ -20,50 +20,39 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Response> movieNotFound(MovieNotFoundException ex){
 
         Response response = Response.builder()
-                .fecha(LocalDateTime.now())
+                .fecha(LocalDateTime.now().toString())
                 .codigoResultado("NOT_FOUND")
                 .descripcionRespuesta(ex.getMessage())
                 .result(Collections.emptyList())
                 .build();
 
-        return new ResponseEntity<Response>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<Response> unauthorized(UnauthorizedException ex){
 
         Response response = Response.builder()
-                .fecha(LocalDateTime.now())
+                .fecha(LocalDateTime.now().toString())
                 .codigoResultado("UNAUTHORIZED")
                 .descripcionRespuesta(ex.getMessage())
                 .result(Collections.emptyList())
                 .build();
 
-        return new ResponseEntity<Response>(response, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Response> custom(CustomException ex){
         Response response = Response.builder()
-                .fecha(LocalDateTime.now())
+                .fecha(LocalDateTime.now().toString())
                 .codigoResultado("BAD_REQUEST")
                 .descripcionRespuesta(ex.getMessage())
                 .result(Collections.emptyList())
                 .build();
 
-        return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Response> custom(RuntimeException ex){
-        Response response = Response.builder()
-                .fecha(LocalDateTime.now())
-                .codigoResultado("BAD_REQUEST")
-                .descripcionRespuesta(ex.getMessage())
-                .result(Collections.emptyList())
-                .build();
-
-        return new ResponseEntity<Response>(response, HttpStatus.BAD_REQUEST);
-    }
 
 }

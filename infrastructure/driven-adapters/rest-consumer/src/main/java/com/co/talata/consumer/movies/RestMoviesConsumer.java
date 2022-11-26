@@ -1,10 +1,6 @@
 package com.co.talata.consumer.movies;
 
 import com.co.talata.consumer.MoviesURL;
-import com.co.talata.consumer.exceptions.custom.NoDataFoundException;
-import com.co.talata.consumer.exceptions.custom.RequestNotSuccesfulException;
-import com.co.talata.model.movie.Movie;
-import com.co.talata.model.movie.gateways.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -41,10 +37,6 @@ public class RestMoviesConsumer  {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()){
-            throw new RequestNotSuccesfulException("La operación no ha sido exitosa. No pudo obtener los datos");
-        }
-
         String jsonData = response.body().string();
 
         if(jsonData == null){
@@ -70,10 +62,6 @@ public class RestMoviesConsumer  {
         Request request = moviesURL.generateRequest(httpUrl).newBuilder().get().build();
 
         Response response = client.newCall(request).execute();
-
-        if(!response.isSuccessful()){
-            throw new RequestNotSuccesfulException("La operación no ha sido exitosa. No pudo obtener los datos");
-        }
 
         String jsonData = response.body().string();
 
