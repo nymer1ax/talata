@@ -38,24 +38,43 @@ private final DeleteratingmovieUseCase deleteratingmovieUseCase;
 
         Page<Movie> pageList = new PageImpl<>(movies, PageRequest.of(paginationNumPage, paginationSizeElements), movies.size());
 
-        var response = Response.builder().codigoResultado("200").descripcionRespuesta("Exitosa").fecha(LocalDateTime.now())
+        var response = Response.builder().codigoResultado("200").descripcionRespuesta("OK").fecha(LocalDateTime.now())
                 .result(pageList).build();
 
         return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping(path = "/movies/{id}")
-    public Movie getMovieByID(@PathVariable(required = true) int id) throws IOException {
-        return getMovieByIdUseCase.getMovieById(id);
+    public ResponseEntity<Response> getMovieByID(@PathVariable(required = true) int id) throws IOException {
+
+       Movie movies = getMovieByIdUseCase.getMovieById(id);
+
+        Response response = Response.builder().codigoResultado("202").descripcionRespuesta("ACCEPTED").fecha(LocalDateTime.now())
+                .result(movies).build();
+
+        return  ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
     @PostMapping(path = "/movies/{id}/rating")
-    public Movie rateMovie(@PathVariable(required = true) int id, @RequestParam(defaultValue = "8f1529e1ab26cf1926f9c934ca239df7") String guestSessionId, @RequestBody String value) throws IOException {
-        return ratemovieUseCase.RateMovie(id, guestSessionId, value);
+    public ResponseEntity<Response> rateMovie(@PathVariable(required = true) int id, @RequestParam(defaultValue = "8f1529e1ab26cf1926f9c934ca239df7") String guestSessionId, @RequestBody String value) throws IOException {
+
+        Movie rate = ratemovieUseCase.RateMovie(id, guestSessionId, value);
+
+        Response response = Response.builder().codigoResultado("201").descripcionRespuesta("CREATED").fecha(LocalDateTime.now())
+                .result(rate).build();
+
+        return  ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping(path = "/movies/{id}/rating")
-    public Movie getMovieByID(@PathVariable(required = true) int id, @RequestParam(defaultValue = "8f1529e1ab26cf1926f9c934ca239df7") String guestSessionId) throws IOException {
-        return deleteratingmovieUseCase.eliminarRating(id, guestSessionId);
+    public ResponseEntity<Response> getMovieByID(@PathVariable(required = true) int id, @RequestParam(defaultValue = "8f1529e1ab26cf1926f9c934ca239df7") String guestSessionId) throws IOException {
+
+        Movie rate = deleteratingmovieUseCase.eliminarRating(id, guestSessionId);
+
+        Response response = Response.builder().codigoResultado("201").descripcionRespuesta("CREATED").fecha(LocalDateTime.now())
+                .result(rate).build();
+
+        return  ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+
     }
 }
