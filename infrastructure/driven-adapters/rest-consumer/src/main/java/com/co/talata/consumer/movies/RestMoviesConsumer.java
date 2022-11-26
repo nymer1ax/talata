@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,12 +40,19 @@ public class RestMoviesConsumer  {
 
         String jsonData = response.body().string();
 
-        if(jsonData == null){
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        boolean validacion = jsonObject.has("errors");
+
+        if(validacion){
             return Collections.emptyList();
         }
 
-        JSONObject jsonObject = new JSONObject(jsonData);
         JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+        if(jsonArray == null){
+            throw new IOException("La consulta ha fallado. ");
+        }
 
         return moviesMapper.mapJSONArrayToMovieResponse(jsonArray);
 
@@ -65,11 +73,14 @@ public class RestMoviesConsumer  {
 
         String jsonData = response.body().string();
 
-        if(jsonData == null){
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        boolean validacion = jsonObject.has("success");
+
+        if(validacion){
             return Optional.empty();
         }
 
-        JSONObject jsonObject = new JSONObject(jsonData);
 
         return Optional.of(moviesMapper.JSONOBJECTtoMovieResponse(jsonObject));
 

@@ -1,12 +1,13 @@
 package com.co.talata.consumer.rating;
 
 import com.co.talata.consumer.MoviesURL;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import okhttp3.*;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 
 @Log
@@ -18,6 +19,7 @@ public class RestRatingConsumer  {
     private final RatingMapper ratingMapper;
     private final MoviesURL moviesURL;
 
+    private final ObjectMapper objectMapper;
 
     public RatingResponse createRate(int movieId, String guestSessionId, String value) throws IOException {
 
@@ -27,15 +29,15 @@ public class RestRatingConsumer  {
                 .addPathSegment("rating")
                 .addQueryParameter("guest_session_id", guestSessionId).build();
 
-        RequestBody requestBody = RequestBody.create(value, MediaType.parse("application/json; charset=utf-8"));
 
-
+        RequestBody requestBody = RequestBody.create(value, MediaType.parse("application/json"));
+        
         Request request = moviesURL.generateRequest(httpUrl).newBuilder().post(requestBody).build();
 
         Response response = client.newCall(request).execute();
 
         if(response.code() == 400){
-            throw new RuntimeException("El formato del valor esta incorrecto, verifica.");
+            throw new RuntimeException("Ingresaste algo mal, verifica.");
         }
 
         String json =  response.body().string();

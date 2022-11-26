@@ -33,7 +33,7 @@ private final RatemovieUseCase ratemovieUseCase;
 private final DeleteratingmovieUseCase deleteratingmovieUseCase;
 
     @GetMapping(path = "/movies")
-    public ResponseEntity<Response> popularMovies(@RequestParam(defaultValue = "2") int page, @RequestParam(defaultValue = "0") int pagePagination, @RequestParam(defaultValue = "20") int size) throws IOException {
+    public ResponseEntity<Response> popularMovies(@RequestParam(defaultValue = "2", required = true) int page, @RequestParam(defaultValue = "0") int pagePagination, @RequestParam(defaultValue = "20") int size) throws IOException {
 
         List<Movie> movies =  getAllMovieUseCase.getAllPopularMovies(page);
 
