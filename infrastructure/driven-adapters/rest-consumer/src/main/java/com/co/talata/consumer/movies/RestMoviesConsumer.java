@@ -1,5 +1,6 @@
 package com.co.talata.consumer.movies;
 
+import com.co.talata.consumer.movies.exceptions.custom.NoDataFoundException;
 import com.co.talata.consumer.movies.exceptions.custom.RequestNotSuccesfulException;
 import com.co.talata.model.movie.Movie;
 import com.co.talata.model.movie.gateways.MovieRepository;
@@ -38,27 +39,18 @@ public class RestMoviesConsumer implements MovieRepository {
     private final OkHttpClient client;
 
     private final ObjectMapper mapper;
-
     private final MoviesMapper moviesMapper;
 
+    private final MoviesURL moviesURL;
+
     @Override
-    public List<Movie> getAllPopular(int page) throws IOException {
+    public List<Movie> findAllTopRated(int page) throws IOException {
 
-        HttpUrl httpUrl = new HttpUrl.Builder()
-                .scheme(base.substring(0, 5))
-                .host(base.substring(8, 26))
-                .addPathSegment(base.substring(27))
-                .addPathSegment("movie")
-                .addPathSegment("top_rated")
-                .addQueryParameter("api_key", apikey)
-                .addQueryParameter("page", String.valueOf(page))
-                .build();
 
-        Request request = new Request.Builder()
-                .addHeader("Content-Type", "application/json")
-                .url(httpUrl)
-                .get()
-                .build();
+        HttpUrl httpUrl = moviesURL.generateUrl().newBuilder().addPathSegment("movie")
+                .addPathSegment("top_rated").addQueryParameter("page", String.valueOf(page)).build();
+
+        Request request = moviesURL.generateRequest(httpUrl);
 
         Response response = client.newCall(request).execute();
 
@@ -67,12 +59,47 @@ public class RestMoviesConsumer implements MovieRepository {
         }
 
         String jsonData = response.body().string();
+
+        if(jsonData == null){
+            throw new NoDataFoundException("No se han encontrado datos para esta consulta.");
+        }
+
         JSONObject jsonObject = new JSONObject(jsonData);
         JSONArray jsonArray = jsonObject.getJSONArray("results");
 
         var movies = moviesMapper.mapJSONArrayToMovieResponse(jsonArray);
 
         return moviesMapper.moviesResponseListToMovieList(movies);
+
+    }
+
+    @Override
+    public Movie findById(int page, int id) throws IOException {
+
+        HttpUrl httpUrl = moviesURL.generateUrl().newBuilder()
+                .addPathSegment("movie")
+                .addPathSegment(String.valueOf(id))
+                .addQueryParameter("page", String.valueOf(page)).build();
+
+        Request request = moviesURL.generateRequest(httpUrl);
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()){
+            throw new RequestNotSuccesfulException("La operación no ha sido exitosa. No pudo obtener los datos");
+        }
+
+        String jsonData = response.body().string();
+
+        if(jsonData == null){
+            throw new NoDataFoundException("No se han encontrado datos para esta consulta.");
+        }
+
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        MoviesResponse moviesResponse = moviesMapper.JSONOBJECTtoMovieResponse(jsonObject);
+
+        return moviesMapper.movieResponseToMovie(moviesResponse);
 
     }
 }

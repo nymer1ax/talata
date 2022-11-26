@@ -6,5 +6,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface MovieRepository {
-    List<Movie> getAllPopular(int page) throws IOException;
+    List<Movie> findAllTopRated(int page) throws IOException;
+    Movie findById(int page, int id) throws IOException;
 }

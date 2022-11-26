@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,5 +48,9 @@ public class MoviesMapper {
 
     public List<Movie> moviesResponseListToMovieList(List<MoviesResponse> movies){
         return movies.stream().map(this::movieResponseToMovie).collect(Collectors.toList());
+    }
+
+    public MoviesResponse JSONOBJECTtoMovieResponse(JSONObject jsonObject) throws JsonProcessingException {
+        return mapper.readValue(jsonObject.toString(), MoviesResponse.class);
     }
 }

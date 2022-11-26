@@ -2,7 +2,6 @@ package com.co.talata.usecase.getallmovie;
 
 import com.co.talata.model.movie.Movie;
 import com.co.talata.model.movie.gateways.MovieRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -13,6 +12,6 @@ public class GetAllMovieUseCase  {
    private final MovieRepository movieRepository;
 
    public List<Movie> getAllPopularMovies(int page) throws IOException {
-       return movieRepository.getAllPopular(page);
+       return movieRepository.findAllTopRated(page);
    }
 }
