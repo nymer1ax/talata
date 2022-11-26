@@ -1,5 +1,6 @@
 package com.co.talata.consumer.movies;
 
+import com.co.talata.consumer.movies.exceptions.custom.RequestNotSuccesfulException;
 import com.co.talata.model.movie.Movie;
 import com.co.talata.model.movie.gateways.MovieRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,7 +63,7 @@ public class RestMoviesConsumer implements MovieRepository {
         Response response = client.newCall(request).execute();
 
         if(!response.isSuccessful()){
-            throw new RuntimeException("No se ha podido obtener los datos");
+            throw new RequestNotSuccesfulException("La operación no ha sido exitosa. No pudo obtener los datos");
         }
 
         String jsonData = response.body().string();
