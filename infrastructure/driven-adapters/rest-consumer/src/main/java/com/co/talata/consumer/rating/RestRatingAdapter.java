@@ -20,5 +20,11 @@ public class RestRatingAdapter implements RatingMovieRepository {
         return ratingMapper.ratingResponseToRating(rating);
     }
 
+    @Override
+    public Rating delete(int movieId, String guestSessionId) throws IOException {
+        RatingResponse rating = restRatingConsumer.deleteRate(movieId, guestSessionId);
+        return ratingMapper.ratingResponseToRating(rating);
+    }
+
 
 }

@@ -42,6 +42,27 @@ public class RestRatingConsumer  {
 
     }
 
+    public RatingResponse deleteRate(int movieId, String guestSessionId) throws IOException {
+
+        HttpUrl httpUrl = moviesURL.generateUrl().newBuilder()
+                .addPathSegment("movie")
+                .addPathSegment(String.valueOf(movieId))
+                .addPathSegment("rating")
+                .addQueryParameter("guest_session_id", guestSessionId).build();
+
+
+        Request request = moviesURL.generateRequest(httpUrl).newBuilder().delete().build();
+
+        Response response = client.newCall(request).execute();
+
+        String json =  response.body().string();
+
+        JSONObject jsonObject = new JSONObject(json);
+
+        return ratingMapper.jsonObjectToRatingResponse(jsonObject);
+
+    }
+
 
 
 }
