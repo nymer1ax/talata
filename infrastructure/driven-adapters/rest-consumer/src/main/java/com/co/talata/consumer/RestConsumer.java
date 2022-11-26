@@ -8,6 +8,7 @@ import okhttp3.MediaType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 
 @Service
@@ -15,8 +16,12 @@ import java.io.IOException;
 public class RestConsumer // implements Gateway from domain
 {
 
+
     @Value("${adapter.restconsumer.url}")
     private String url;
+
+    @Value("${adapter.restconsumer.apikey}")
+    private String apikey;
     private final OkHttpClient client;
     private final ObjectMapper mapper;
 
@@ -27,29 +32,31 @@ public class RestConsumer // implements Gateway from domain
     public ObjectResponse testGet() throws IOException {
 
         Request request = new Request.Builder()
-            .url(url)
-            .get()
-            .addHeader("Content-Type","application/json")
-            .build();
+                .url(url)
+                .get()
+                .addHeader("Authorization", apikey)
+                .addHeader("Content-Type", "application/json")
+                .build();
 
         return mapper.readValue(client.newCall(request).execute().body().string(), ObjectResponse.class);
     }
 
     public ObjectResponse testPost() throws IOException {
         String json = mapper.writeValueAsString(ObjectRequest.builder()
-            .val1("exampleval1")
-            .val2("exampleval1")
-            .build()
+                .val1("exampleval1")
+                .val2("exampleval1")
+                .build()
         );
 
         RequestBody requestBody = RequestBody
-            .create(json, MediaType.parse("application/json; charset=utf-8"));
+                .create(json, MediaType.parse("application/json; charset=utf-8"));
 
         Request request = new Request.Builder()
-            .url(url)
-            .post(requestBody)
-            .addHeader("Content-Type","application/json")
-            .build();
+                .url(url)
+                .post(requestBody)
+                .addHeader("Authorization", apikey)
+                .addHeader("Content-Type", "application/json")
+                .build();
 
         return mapper.readValue(client.newCall(request).execute().body().string(), ObjectResponse.class);
 

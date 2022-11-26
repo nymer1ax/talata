@@ -13,7 +13,8 @@ spring:
     include: null
 adapter:
   restconsumer:
-    url: "http://localhost:8080"
+    url: "https://api.themoviedb.org/3"
+    apikey: "b367c4d7f17840d073f27e0d2ed45f0d"
 management:
   endpoints:
     web:
