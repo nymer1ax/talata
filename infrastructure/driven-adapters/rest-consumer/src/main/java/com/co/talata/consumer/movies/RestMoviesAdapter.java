@@ -23,7 +23,12 @@ public class RestMoviesAdapter implements MovieRepository {
 
     @Override
     public Optional<Movie> findById(int id) throws IOException {
+
         Optional<MoviesResponse> movie = restMoviesConsumer.findById(id);
+
+        if(movie.isEmpty()){
+            return Optional.empty();
+        }
         return Optional.of(moviesMapper.movieResponseToMovie(movie.get()));
     }
 }
