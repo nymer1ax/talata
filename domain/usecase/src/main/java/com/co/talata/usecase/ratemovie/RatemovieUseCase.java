@@ -22,7 +22,7 @@ public class RatemovieUseCase {
 
         Rating rating = ratingMovieRepository.rate(movieId, guessSessionId, value);
 
-        if(rating.getStatus_code() == 7){
+        if(rating.getStatus_code() == 3){
             throw new UnauthorizedException("Unauthorized, verifica tu guess Session Id.");
         }
 

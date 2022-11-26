@@ -31,7 +31,7 @@ public class RestRatingConsumer  {
 
 
         RequestBody requestBody = RequestBody.create(value, MediaType.parse("application/json"));
-        
+
         Request request = moviesURL.generateRequest(httpUrl).newBuilder().post(requestBody).build();
 
         Response response = client.newCall(request).execute();
