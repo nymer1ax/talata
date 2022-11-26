@@ -34,6 +34,10 @@ public class RestRatingConsumer  {
 
         Response response = client.newCall(request).execute();
 
+        if(response.code() == 400){
+            throw new RuntimeException("El formato del valor esta incorrecto, verifica.");
+        }
+
         String json =  response.body().string();
 
         JSONObject jsonObject = new JSONObject(json);
