@@ -1,4 +1,4 @@
-package com.co.talata.consumer.movies.exceptions.custom;
+package com.co.talata.consumer.exceptions.custom;
 
 public class CustomException extends RuntimeException{
 

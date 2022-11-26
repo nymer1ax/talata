@@ -1,4 +1,4 @@
-package com.co.talata.consumer.movies;
+package com.co.talata.consumer;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.HttpUrl;

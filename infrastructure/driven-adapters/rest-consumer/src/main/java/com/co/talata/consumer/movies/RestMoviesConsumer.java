@@ -1,11 +1,10 @@
 package com.co.talata.consumer.movies;
 
-import com.co.talata.consumer.movies.exceptions.custom.NoDataFoundException;
-import com.co.talata.consumer.movies.exceptions.custom.RequestNotSuccesfulException;
+import com.co.talata.consumer.MoviesURL;
+import com.co.talata.consumer.exceptions.custom.NoDataFoundException;
+import com.co.talata.consumer.exceptions.custom.RequestNotSuccesfulException;
 import com.co.talata.model.movie.Movie;
 import com.co.talata.model.movie.gateways.MovieRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -15,36 +14,24 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.DataInput;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
+import java.util.Optional;
 
 @Log
 @Service
 @RequiredArgsConstructor
-public class RestMoviesConsumer implements MovieRepository {
-
-    @Value("${adapter.restconsumer.url}")
-    private String base;
-
-    @Value("${adapter.restconsumer.apikey}")
-    private String apikey;
-
+public class RestMoviesConsumer  {
     private final OkHttpClient client;
 
-    private final ObjectMapper mapper;
     private final MoviesMapper moviesMapper;
-
     private final MoviesURL moviesURL;
 
-    @Override
-    public List<Movie> findAllTopRated(int page) throws IOException {
+
+    public List<MoviesResponse> findAllTopRated(int page) throws IOException {
 
 
         HttpUrl httpUrl = moviesURL.generateUrl().newBuilder().addPathSegment("movie")
@@ -61,25 +48,24 @@ public class RestMoviesConsumer implements MovieRepository {
         String jsonData = response.body().string();
 
         if(jsonData == null){
-            throw new NoDataFoundException("No se han encontrado datos para esta consulta.");
+            return Collections.emptyList();
         }
 
         JSONObject jsonObject = new JSONObject(jsonData);
         JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-        var movies = moviesMapper.mapJSONArrayToMovieResponse(jsonArray);
+        return moviesMapper.mapJSONArrayToMovieResponse(jsonArray);
 
-        return moviesMapper.moviesResponseListToMovieList(movies);
 
     }
 
-    @Override
-    public Movie findById(int page, int id) throws IOException {
+
+    public Optional<MoviesResponse> findById(int id) throws IOException {
 
         HttpUrl httpUrl = moviesURL.generateUrl().newBuilder()
                 .addPathSegment("movie")
                 .addPathSegment(String.valueOf(id))
-                .addQueryParameter("page", String.valueOf(page)).build();
+                .build();
 
         Request request = moviesURL.generateRequest(httpUrl);
 
@@ -92,14 +78,13 @@ public class RestMoviesConsumer implements MovieRepository {
         String jsonData = response.body().string();
 
         if(jsonData == null){
-            throw new NoDataFoundException("No se han encontrado datos para esta consulta.");
+            return Optional.empty();
         }
 
         JSONObject jsonObject = new JSONObject(jsonData);
 
-        MoviesResponse moviesResponse = moviesMapper.JSONOBJECTtoMovieResponse(jsonObject);
+        return Optional.of(moviesMapper.JSONOBJECTtoMovieResponse(jsonObject));
 
-        return moviesMapper.movieResponseToMovie(moviesResponse);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.co.talata.consumer.movies.exceptions;
+package com.co.talata.consumer.exceptions;
 
 import lombok.*;
 
