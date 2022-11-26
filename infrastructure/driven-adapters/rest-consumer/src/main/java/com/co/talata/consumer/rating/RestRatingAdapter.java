@@ -15,8 +15,8 @@ public class RestRatingAdapter implements RatingMovieRepository {
     private final RatingMapper ratingMapper;
 
     @Override
-    public Rating rate(int movieId, String guestSessionId) throws IOException {
-        RatingResponse rating = restRatingConsumer.rate(movieId, guestSessionId);
+    public Rating rate(int movieId, String guestSessionId, String value) throws IOException {
+        RatingResponse rating = restRatingConsumer.createRate(movieId, guestSessionId, value);
         return ratingMapper.ratingResponseToRating(rating);
     }
 

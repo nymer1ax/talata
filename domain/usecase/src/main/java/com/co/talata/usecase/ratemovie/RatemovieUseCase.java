@@ -15,9 +15,9 @@ public class RatemovieUseCase {
     private final RatingMovieRepository ratingMovieRepository;
     private final MovieRepository movieRepository;
 
-    public Movie RateMovie(int movieId, String guessSessionId) throws IOException{
+    public Movie RateMovie(int movieId, String guessSessionId, String value) throws IOException{
 
-        Rating rating = ratingMovieRepository.rate(movieId, guessSessionId);
+        Rating rating = ratingMovieRepository.rate(movieId, guessSessionId, value);
 
         if(rating.getStatus_code() == 7){
             throw new RuntimeException("Unauthorized, verifica tu guess Session Id.");

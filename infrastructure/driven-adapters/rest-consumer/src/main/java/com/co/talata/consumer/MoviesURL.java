@@ -27,7 +27,6 @@ public class MoviesURL {
         return new Request.Builder()
                 .addHeader("Content-Type", "application/json")
                 .url(httpUrl)
-                .get()
                 .build();
     }
 }

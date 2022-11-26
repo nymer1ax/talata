@@ -37,7 +37,7 @@ public class RestMoviesConsumer  {
         HttpUrl httpUrl = moviesURL.generateUrl().newBuilder().addPathSegment("movie")
                 .addPathSegment("top_rated").addQueryParameter("page", String.valueOf(page)).build();
 
-        Request request = moviesURL.generateRequest(httpUrl);
+        Request request = moviesURL.generateRequest(httpUrl).newBuilder().get().build();
 
         Response response = client.newCall(request).execute();
 
@@ -67,7 +67,7 @@ public class RestMoviesConsumer  {
                 .addPathSegment(String.valueOf(id))
                 .build();
 
-        Request request = moviesURL.generateRequest(httpUrl);
+        Request request = moviesURL.generateRequest(httpUrl).newBuilder().get().build();
 
         Response response = client.newCall(request).execute();
 
