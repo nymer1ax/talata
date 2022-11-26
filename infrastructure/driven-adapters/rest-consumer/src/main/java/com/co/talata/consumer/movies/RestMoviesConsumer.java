@@ -34,7 +34,6 @@ public class RestMoviesConsumer implements MovieRepository {
     @Value("${adapter.restconsumer.apikey}")
     private String apikey;
 
-
     private final OkHttpClient client;
 
     private final ObjectMapper mapper;
@@ -43,7 +42,6 @@ public class RestMoviesConsumer implements MovieRepository {
 
     @Override
     public List<Movie> getAllPopular(int page) throws IOException {
-        String av = "";
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme(base.substring(0, 5))
@@ -63,20 +61,15 @@ public class RestMoviesConsumer implements MovieRepository {
 
         Response response = client.newCall(request).execute();
 
+        if(!response.isSuccessful()){
+            throw new RuntimeException("No se ha podido obtener los datos");
+        }
+
         String jsonData = response.body().string();
-        JSONObject Jobject = new JSONObject(jsonData);
-        JSONArray Jarray = Jobject.getJSONArray("results");
-        String b = "";
+        JSONObject jsonObject = new JSONObject(jsonData);
+        JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-//        var aa = StreamSupport.stream(Jarray.spliterator(), false).map(m -> {
-//            try {
-//                return mapper.readValue(m.toString(), MoviesResponse.class);
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }).collect(Collectors.toList());
-
-        var movies = moviesMapper.mapJSONArrayToMovieResponse(Jarray);
+        var movies = moviesMapper.mapJSONArrayToMovieResponse(jsonArray);
 
         return moviesMapper.moviesResponseListToMovieList(movies);
 
